@@ -6,6 +6,7 @@
 	export let index: number;
 	export let masses: Writable<number[]> = writable([]);
 	export let limitingReagent: string = '';
+	export let limitingReagentMoles: number;
 
 	let molesInput = '';
 

@@ -35,7 +35,7 @@
 	}
 
 	//Calculate limiting reagent using parralel arrays
-	function getLimitingReagent(): string {
+	function getLimitingReagent(): { reagent: string; moles: number } {
 		let reactants = getReactants(equation);
 		let products = getProducts(equation);
 		let reactantMoles = reactants.map((compound) => {
@@ -52,12 +52,17 @@
 				limitingReagent = reactants[i];
 			}
 		}
-		return limitingReagent;
+
+		return { reagent: limitingReagent, moles: min };
 	}
 
 	let limitingReagent = '';
+	let limitingReagentMoles = 0;
 	$ : masses.subscribe((arr) => {
-		limitingReagent = getLimitingReagent();
+		const { reagent, moles } = getLimitingReagent();
+
+		limitingReagent = reagent;
+		limitingReagentMoles = moles;
 	});
 
 	let mass = '';
@@ -119,12 +124,12 @@
 	<p class="mb-4 mt-4 text-white">Molar mass: {mass} g/mol</p>
 	<div class="flex flex-row items-center justify-center gap-2">
 		{#each getReactants(equation) as part, index}
-			<Compound {index} {masses} {limitingReagent} compound={part} />
+			<Compound {index} {masses} {limitingReagent} {limitingReagentMoles} compound={part} />
 		{/each}
 		{#if getProducts(equation).length != 0}
 			<div class="text-2xl text-white">→</div>
 			{#each getProducts(equation) as part, index}
-				<Compound index={index + getReactants(equation).length} {limitingReagent} {masses} compound={part} />
+				<Compound index={index + getReactants(equation).length} {limitingReagent} {limitingReagentMoles} {masses} compound={part} />
 			{/each}
 		{/if}
 	</div>
